@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
+import { UserSchema } from '../schema/User';
 
-dotenv.config({ path: __dirname + '/../.env' });
+dotenv.config({ path: __dirname + './../../.env' });
 
 const wonderbitsMongoURI = process.env.WONDERBITS_MONGODB_URI!;
 const wonderchampsMongoURI = process.env.WONDERCHAMPS_MONGODB_URI!;
@@ -24,3 +25,5 @@ WONDERCHAMPS_CONNECTION.on('connected', () => {
 WONDERCHAMPS_CONNECTION.on('error', (err) => {
     console.error(`Error connecting to Wonderchamps database: ${err}`);
 });
+
+export const UserModel = WONDERCHAMPS_CONNECTION.model('Users', UserSchema, 'Users');

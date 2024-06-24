@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import session from 'express-session';
 
 dotenv.config({ path: __dirname + '/../.env' });
 
@@ -12,12 +13,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors()); // temporarily allowing all cors requests
 
-// // memory store for session management
-// app.use(session({
-//     secret: process.env.SESSION_SECRET!,
-//     resave: false,
-//     saveUninitialized: false
-// }))
+// memory store for session management
+app.use(session({
+    secret: process.env.SESSION_SECRET!,
+    resave: false,
+    saveUninitialized: false
+}))
 
 // app.use(passport.initialize());
 // app.use(passport.session());
