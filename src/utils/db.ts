@@ -26,4 +26,4 @@ WONDERCHAMPS_CONNECTION.on('error', (err) => {
     console.error(`Error connecting to Wonderchamps database: ${err}`);
 });
 
-export const UserModel = WONDERCHAMPS_CONNECTION.model('Users', UserSchema, 'Users');
+export const WonderchampsUserModel = WONDERCHAMPS_CONNECTION.model('Users', UserSchema, 'Users');
