@@ -1,18 +1,15 @@
 import express from 'express';
-import { validateJWT } from '../../utils/jwt';
+import { generateJWT, validateJWT } from '../../utils/jwt';
 import { APIResponseStatus } from '../../models/api';
 import passport from '../../configs/passport';
 import { ExtendedXProfile } from '../../utils/customProfiles';
+import { handleXAuth } from '../../api/auth';
 
 const router = express.Router();
 
 router.get('/login', async (req, res, next) => {
     // get the jwt token (if it exists) from the request headers
     const token = req.headers.authorization?.split(' ')[1];
-
-    const host = req.query.host || 'https://x.com';
-    (req.session as any).redirectHost = host;
-    (req.session as any).version = req.query.version || '-';
 
     if (token) {
         // check for validation
@@ -47,10 +44,45 @@ router.get('/callback', passport.authenticate('twitter', { failureRedirect: 'won
     }
 
     try {
-        const { id: xId, xAccessToken, xRefreshToken, xExpiryDate } = req.user as ExtendedXProfile;
+        const { 
+            id: xId, 
+            xAccessToken, 
+            xRefreshToken, 
+            xExpiryDate, 
+            username, 
+            photos, 
+            profileUrl, 
+            provider,  
+            displayName
+        } = req.user as ExtendedXProfile;
 
-        // // call `handleXAuth`
-        // const { status, message, data } = await handleXAuth
+        // call `handleXAuth`
+        const { status, message, data } = await handleXAuth(
+            xId,
+            {
+                id: xId,
+                xAccessToken,
+                xRefreshToken,
+                xExpiryDate,
+                username,
+                photos,
+                profileUrl,
+                provider,
+                displayName
+            }
+        );
+
+        if (status !== APIResponseStatus.SUCCESS) {
+            return res.status(status).json({
+                status,
+                message
+            });
+        } else {
+            const token = generateJWT(xId, xAccessToken, xRefreshToken);
+            
+            // custom redirect to be intercepted by unity
+            return res.redirect(`wonderchamps://x-auth?jwt=${token}`);
+        }
     } catch (err: any) {
         return res.status(500).json({
             status: APIResponseStatus.INTERNAL_SERVER_ERROR,
