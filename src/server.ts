@@ -3,6 +3,7 @@ import cors from 'cors';
 import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import session from 'express-session';
+import passport from './configs/passport';
 
 dotenv.config({ path: __dirname + '/../.env' });
 
@@ -20,8 +21,8 @@ app.use(session({
     saveUninitialized: false
 }))
 
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.listen(port, async () => {
     console.log(`Server running on port ${port}`);
