@@ -24,6 +24,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+import xAuth from './routes/auth/x';
+
+app.use('/auth/x', xAuth);
+
 app.listen(port, async () => {
     console.log(`Server running on port ${port}`);
 });

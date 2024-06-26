@@ -89,4 +89,6 @@ router.get('/callback', passport.authenticate('twitter', { failureRedirect: 'won
             message: `(auth_x_callback) Error: ${err.message}`
         })
     }
-})
+});
+
+export default router;
