@@ -2,7 +2,7 @@ import { APIResponse, APIResponseStatus } from '../models/api';
 import axios from 'axios';
 import { WONDERBITS_API_BASE_URL } from '../utils/endpoints';
 import { ExtendedXProfile } from '../utils/customProfiles';
-import { WonderchampsUserModel } from '../utils/db';
+import { WonderchampsUserModel } from '../utils/constants/db';
 
 /**
  * Authenticates a user via X (Twitter).
