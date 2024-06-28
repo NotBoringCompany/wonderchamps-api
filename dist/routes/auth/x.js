@@ -62,6 +62,7 @@ router.get('/callback', passport_1.default.authenticate('twitter', { failureRedi
             displayName
         });
         if (status !== api_1.APIResponseStatus.SUCCESS) {
+            console.log('status is not success');
             return res.status(status).json({
                 status,
                 message
@@ -69,6 +70,7 @@ router.get('/callback', passport_1.default.authenticate('twitter', { failureRedi
         }
         else {
             const token = (0, jwt_1.generateJWT)(xId, xAccessToken, xRefreshToken);
+            console.log('status success. token generated from callback: ', token);
             // custom redirect to be intercepted by unity
             return res.redirect(`wonderchamps://x-auth?jwt=${token}`);
         }
