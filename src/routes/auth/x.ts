@@ -18,7 +18,7 @@ router.get('/login', async (req, res, next) => {
         const { status } = validateJWT(token);
         if (status === APIResponseStatus.SUCCESS) {
             // custom redirect to be intercepted by unity
-            return res.redirect(`wonderchamps://x-auth?jwt=${token}`);
+            return res.redirect(`https://wonderchamps-api.up.railway.app/auth/x/success?jwt=${token}`);
         } else {
             console.log('token is invalid');
 
@@ -41,7 +41,7 @@ router.get('/login', async (req, res, next) => {
     }
 });
 
-router.get('/callback', passport.authenticate('twitter', { failureRedirect: 'wonderchamps://x-auth-fail', session: true, keepSessionInfo: true }), async (req, res) => {
+router.get('/callback', passport.authenticate('twitter', { failureRedirect: 'https://wonderchamps-api.up.railway.app/auth/x/failure', session: true, keepSessionInfo: true }), async (req, res) => {
     if (!req.user) {
         return res.status(401).json({
             status: APIResponseStatus.UNAUTHORIZED,
@@ -91,7 +91,7 @@ router.get('/callback', passport.authenticate('twitter', { failureRedirect: 'won
             console.log('status success. token generated from callback: ', token);
             
             // custom redirect to be intercepted by unity
-            return res.redirect(`wonderchamps://x-auth?jwt=${token}`);
+            return res.redirect(`https://wonderchamps-api.up.railway.app/auth/x/success?jwt=${token}`);
         }
     } catch (err: any) {
         return res.status(500).json({
