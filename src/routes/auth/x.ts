@@ -121,7 +121,7 @@ router.get('/success', (req, res) => {
         <html>
             <body>
                 <script type="text/javascript">
-                    window.location.href = "unity://auth-success?jwt=${token}";
+                    window.location.href = "unity://auth/x/success?jwt=${token}";
                 </script>
                 <p>Login successful! You can now close this window.</p>
             </body>
@@ -134,7 +134,7 @@ router.get('/failure', (req, res) => {
         <html>
             <body>
                 <script type="text/javascript">
-                    window.location.href = "unity://auth-failure";
+                    window.location.href = "unity://auth/x/failure";
                 </script>
                 <p>Login failed. Please try again.</p>
             </body>
