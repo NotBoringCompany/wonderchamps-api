@@ -125,4 +125,15 @@ router.get('/failure', (req, res) => {
     })
 });
 
+router.get('/mock_redirect', (req, res) => {
+    return res.redirect(`https://wonderchamps-api.up.railway.app/auth/x/mock_success?jwt=mock_jwt`);
+});
+
+router.get('/mock_success', (req, res) => {
+    return res.status(200).json({
+        status: APIResponseStatus.SUCCESS,
+        message: 'You have successfully logged in. You may now close this window.'
+    });
+});
+
 export default router;
