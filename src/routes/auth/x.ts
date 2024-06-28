@@ -12,12 +12,16 @@ router.get('/login', async (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
 
     if (token) {
+        console.log('token is valid');
+
         // check for validation
         const { status } = validateJWT(token);
         if (status === APIResponseStatus.SUCCESS) {
             // custom redirect to be intercepted by unity
             return res.redirect(`wonderchamps://x-auth?jwt=${token}`);
         } else {
+            console.log('token is invalid');
+
             // token is invalid, redirect to X for authentication
             passport.authenticate('twitter', {
                 scope: ['tweet.read', 'users.read', 'offline.access'],
@@ -26,6 +30,8 @@ router.get('/login', async (req, res, next) => {
             })(req, res, next);
         }
     } else {
+        console.log('token doesnt exist. redirecting to callback');
+
         // token doesn't exist, redirect to X for authentication
         passport.authenticate('twitter', {
             scope: ['tweet.read', 'users.read', 'offline.access'],

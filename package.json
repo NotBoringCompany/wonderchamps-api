@@ -30,6 +30,7 @@
     "express-session": "^1.18.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.3",
-    "passport": "^0.7.0"
+    "passport": "^0.7.0",
+    "viem": "^2.16.3"
   }
 }
