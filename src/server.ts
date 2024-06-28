@@ -28,6 +28,10 @@ import xAuth from './routes/auth/x';
 
 app.use('/auth/x', xAuth);
 
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+})
+
 app.listen(port, async () => {
     console.log(`Server running on port ${port}`);
 });

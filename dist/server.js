@@ -29,20 +29,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv = __importStar(require("dotenv"));
+const express_session_1 = __importDefault(require("express-session"));
+const passport_1 = __importDefault(require("./configs/passport"));
 dotenv.config({ path: __dirname + '/../.env' });
 const app = (0, express_1.default)();
 const port = process.env.PORT;
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(express_1.default.json());
 app.use((0, cors_1.default)()); // temporarily allowing all cors requests
-// // memory store for session management
-// app.use(session({
-//     secret: process.env.SESSION_SECRET!,
-//     resave: false,
-//     saveUninitialized: false
-// }))
-// app.use(passport.initialize());
-// app.use(passport.session());
+// memory store for session management
+app.use((0, express_session_1.default)({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport_1.default.initialize());
+app.use(passport_1.default.session());
+const x_1 = __importDefault(require("./routes/auth/x"));
+app.use('/auth/x', x_1.default);
 app.listen(port, async () => {
     console.log(`Server running on port ${port}`);
 });
