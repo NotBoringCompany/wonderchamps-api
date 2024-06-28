@@ -112,34 +112,17 @@ router.get('/success', (req, res) => {
         });
     }
 
-    // return res.status(200).json({
-    //     status: APIResponseStatus.SUCCESS,
-    //     message: 'You have successfully logged in. You may now close this window.'
-    // });
-
-    return res.send(`
-        <html>
-            <body>
-                <script type="text/javascript">
-                    window.location.href = "unity://auth/x/success?jwt=${token}";
-                </script>
-                <p>Login successful! You can now close this window.</p>
-            </body>
-        </html>
-    `);
+    return res.status(200).json({
+        status: APIResponseStatus.SUCCESS,
+        message: 'You have successfully logged in. You may now close this window.'
+    });
 });
 
 router.get('/failure', (req, res) => {
-    return res.send(`
-        <html>
-            <body>
-                <script type="text/javascript">
-                    window.location.href = "unity://auth/x/failure";
-                </script>
-                <p>Login failed. Please try again.</p>
-            </body>
-        </html>
-    `);
+    return res.status(401).json({
+        status: APIResponseStatus.UNAUTHORIZED,
+        message: 'You denied the app or your session has expired. Please try again.'
+    })
 });
 
 export default router;
