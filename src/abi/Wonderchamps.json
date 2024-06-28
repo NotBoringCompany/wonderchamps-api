@@ -1,0 +1,915 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "AccessControlBadConfirmation",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "neededRole",
+        "type": "bytes32"
+      }
+    ],
+    "name": "AccessControlUnauthorizedAccount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ECDSAInvalidSignature",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "length",
+        "type": "uint256"
+      }
+    ],
+    "name": "ECDSAInvalidSignatureLength",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "s",
+        "type": "bytes32"
+      }
+    ],
+    "name": "ECDSAInvalidSignatureS",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidAdminSignature",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidPlayerSignature",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "itemId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ItemAlreadyOwned",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "fragmentId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ItemFragmentAlreadyOwned",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "fragmentId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ItemFragmentNotOwned",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "itemId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ItemNotOwned",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "season",
+        "type": "uint256"
+      }
+    ],
+    "name": "LeagueDataAlreadyExists",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotSelfOrAdmin",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PlayerAlreadyExists",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "previousAdminRole",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "newAdminRole",
+        "type": "bytes32"
+      }
+    ],
+    "name": "RoleAdminChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "RoleGranted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "RoleRevoked",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "DEFAULT_ADMIN_ROLE",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "owned",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "numData",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IItemFragment.OwnedItemFragment",
+        "name": "fragment",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes[2]",
+        "name": "sigData",
+        "type": "bytes[2]"
+      }
+    ],
+    "name": "addItemFragmentToInventory",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "owned",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "numData",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes[]",
+            "name": "additionalData",
+            "type": "bytes[]"
+          }
+        ],
+        "internalType": "struct IItem.OwnedItem",
+        "name": "item",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes[2]",
+        "name": "sigData",
+        "type": "bytes[2]"
+      }
+    ],
+    "name": "addItemToInventory",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "stats",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes",
+            "name": "battleHistory",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct ILeagueData.LeagueData",
+        "name": "data",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes[2]",
+        "name": "sigData",
+        "type": "bytes[2]"
+      }
+    ],
+    "name": "addLeagueData",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes[2]",
+        "name": "sigData",
+        "type": "bytes[2]"
+      }
+    ],
+    "name": "createPlayer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "salt",
+        "type": "bytes"
+      }
+    ],
+    "name": "dataHash",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "ownedItemIDs",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "ownedItemFragmentIDs",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "leagueSeasons",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "bytes[3]",
+        "name": "sigData",
+        "type": "bytes[3]"
+      }
+    ],
+    "name": "deletePlayer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "fragmentIds",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "getItemFragments",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "owned",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "numData",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IItemFragment.OwnedItemFragment[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "itemIds",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "getItems",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "owned",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "numData",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes[]",
+            "name": "additionalData",
+            "type": "bytes[]"
+          }
+        ],
+        "internalType": "struct IItem.OwnedItem[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "seasons",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "getLeagueData",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "stats",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes",
+            "name": "battleHistory",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct ILeagueData.LeagueData[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      }
+    ],
+    "name": "getOwnedIGC",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "itemIDs",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "fragmentIDs",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "leagueSeasons",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "getPlayer",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "ownedIGC",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "owned",
+                "type": "bool"
+              },
+              {
+                "internalType": "uint256",
+                "name": "numData",
+                "type": "uint256"
+              },
+              {
+                "internalType": "bytes[]",
+                "name": "additionalData",
+                "type": "bytes[]"
+              }
+            ],
+            "internalType": "struct IItem.OwnedItem[]",
+            "name": "items",
+            "type": "tuple[]"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "owned",
+                "type": "bool"
+              },
+              {
+                "internalType": "uint256",
+                "name": "numData",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct IItemFragment.OwnedItemFragment[]",
+            "name": "fragments",
+            "type": "tuple[]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "drawingStats",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "stats",
+                "type": "uint256"
+              },
+              {
+                "internalType": "bytes",
+                "name": "battleHistory",
+                "type": "bytes"
+              }
+            ],
+            "internalType": "struct ILeagueData.LeagueData[]",
+            "name": "leagueData",
+            "type": "tuple[]"
+          }
+        ],
+        "internalType": "struct IPlayer.Player",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getRoleAdmin",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "grantRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "hasRole",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      }
+    ],
+    "name": "playerExists",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "fragmentId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes[3]",
+        "name": "sigData",
+        "type": "bytes[3]"
+      }
+    ],
+    "name": "removeItemFragmentFromInventory",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "itemId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes[3]",
+        "name": "sigData",
+        "type": "bytes[3]"
+      }
+    ],
+    "name": "removeItemFromInventory",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "callerConfirmation",
+        "type": "address"
+      }
+    ],
+    "name": "renounceRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "revokeRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[2]",
+        "name": "data",
+        "type": "uint256[2]"
+      },
+      {
+        "internalType": "bytes[2]",
+        "name": "sigData",
+        "type": "bytes[2]"
+      }
+    ],
+    "name": "updateItemFragmentNumData",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "newIGC",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes[2]",
+        "name": "sigData",
+        "type": "bytes[2]"
+      }
+    ],
+    "name": "updateOwnedIGC",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "itemId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes[]",
+        "name": "_additionalData",
+        "type": "bytes[]"
+      },
+      {
+        "internalType": "bytes[]",
+        "name": "sigData",
+        "type": "bytes[]"
+      }
+    ],
+    "name": "updateOwnedItemAdditionalData",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[2]",
+        "name": "data",
+        "type": "uint256[2]"
+      },
+      {
+        "internalType": "bytes[2]",
+        "name": "sigData",
+        "type": "bytes[2]"
+      }
+    ],
+    "name": "updateOwnedItemNumData",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
