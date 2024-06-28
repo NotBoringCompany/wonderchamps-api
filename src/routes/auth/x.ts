@@ -102,4 +102,44 @@ router.get('/callback', passport.authenticate('twitter', { failureRedirect: 'htt
     }
 });
 
+router.get('/success', (req, res) => {
+    const token = req.query.jwt as string;
+
+    if (!token) {
+        return res.status(401).json({
+            status: APIResponseStatus.UNAUTHORIZED,
+            message: 'JWT token is missing. Please try again.'
+        });
+    }
+
+    // return res.status(200).json({
+    //     status: APIResponseStatus.SUCCESS,
+    //     message: 'You have successfully logged in. You may now close this window.'
+    // });
+
+    return res.send(`
+        <html>
+            <body>
+                <script type="text/javascript">
+                    window.location.href = "unity://auth-success?jwt=${token}";
+                </script>
+                <p>Login successful! You can now close this window.</p>
+            </body>
+        </html>
+    `);
+});
+
+router.get('/failure', (req, res) => {
+    return res.send(`
+        <html>
+            <body>
+                <script type="text/javascript">
+                    window.location.href = "unity://auth-failure";
+                </script>
+                <p>Login failed. Please try again.</p>
+            </body>
+        </html>
+    `);
+});
+
 export default router;
