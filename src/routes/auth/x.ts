@@ -11,6 +11,8 @@ router.get('/login', async (req, res, next) => {
     // get the jwt token (if it exists) from the request headers
     const token = req.headers.authorization?.split(' ')[1];
 
+    console.log('token: ', token);
+
     if (token) {
         // check for validation
         const { status } = validateJWT(token);
@@ -18,6 +20,8 @@ router.get('/login', async (req, res, next) => {
             // custom redirect to be intercepted by unity
             return res.redirect(`wonderchamps://x-auth?jwt=${token}`);
         } else {
+            console.log('token is invalid. redirecting to X for auth');
+            
             // token is invalid, redirect to X for authentication
             passport.authenticate('twitter', {
                 scope: ['tweet.read', 'users.read', 'offline.access'],
