@@ -89,6 +89,7 @@ router.get('/callback', passport.authenticate('twitter', { failureRedirect: 'htt
             const token = generateJWT(xId, xAccessToken, xRefreshToken);
 
             console.log('status success. token generated from callback: ', token);
+            console.log('redirecting to: ', `https://wonderchamps-api.up.railway.app/auth/x/success?jwt=${token}`);
             
             // custom redirect to be intercepted by unity
             return res.redirect(`https://wonderchamps-api.up.railway.app/auth/x/success?jwt=${token}`);
