@@ -3,7 +3,8 @@ import { APIResponse, APIResponseStatus } from '../models/api';
 import { WonderchampsUserModel } from '../utils/constants/db';
 import { WONDERBITS_API_BASE_URL } from '../utils/constants/endpoints';
 import * as dotenv from 'dotenv';
-import { DEPLOYER_ACCOUNT, WONDERCHAMPS_CONTRACT } from '../utils/constants/web3';
+import { DEPLOYER_WALLET, WONDERCHAMPS_ABI, WONDERCHAMPS_CONTRACT } from '../utils/constants/web3';
+import { MOCK_SALT, MOCK_SIGNATURE, generateDataHash, generateSalt, generateSignature } from '../utils/crypto';
 
 dotenv.config();
 
@@ -49,16 +50,44 @@ export const checkWeb3AccountExists = async (xId: string): Promise<APIResponse> 
         }
 
         // get the user's wallet address
-        const { address } = userData?.wallet;
+        const { privateKey, address } = userData?.wallet;
 
         // check if the user has a Wonderchamps Web3 account
-        const exists = await WONDERCHAMPS_CONTRACT(DEPLOYER_ACCOUNT).read.playerExists([address]);
+        const exists = await WONDERCHAMPS_CONTRACT.playerExists(address);
 
-        // if the user doesn't have a wonderchamps account, send a response to create one.
+
+        // if the user doesn't have a wonderchamps account, check the estimated gas required to call `createPlayer` in the smart contract.
         if (!exists) {
+            const salt = generateSalt(
+                DEPLOYER_WALLET.address,
+                Math.floor(Date.now() / 1000)
+            );
+
+            console.log('salt: ', salt);
+
+            const dataHash = await WONDERCHAMPS_CONTRACT.dataHash(DEPLOYER_WALLET.address, salt);
+            console.log('data hash: ', dataHash);
+
+            const signature = await generateSignature(
+                dataHash,
+                DEPLOYER_WALLET
+            );
+            console.log('signature: ', signature);
+
+            const estimatedGas = await WONDERCHAMPS_CONTRACT.estimateGas.createPlayer(
+                address,
+                salt,
+                signature
+            );
+
+            console.log('estimated gas: ', estimatedGas);
+
             return {
                 status: APIResponseStatus.NOT_FOUND,
-                message: `(checkWeb3AccountExists) User does not have a Wonderchamps account. Please request to create one.`
+                message: `(checkWeb3AccountExists) User does not have a Wonderchamps account. Please request to create one. Estimated gas is available in the data section.`,
+                data: {
+                    estimatedGas
+                }
             }
         }
 
@@ -67,6 +96,7 @@ export const checkWeb3AccountExists = async (xId: string): Promise<APIResponse> 
             message: `(checkWeb3AccountExists) User has a Wonderchamps account. Login successful.`
         }
     } catch (err: any) {
+        console.log('err: ', err);
         return {
             status: APIResponseStatus.INTERNAL_SERVER_ERROR,
             message: `(checkWeb3AccountExists) Error: ${err.message}`
