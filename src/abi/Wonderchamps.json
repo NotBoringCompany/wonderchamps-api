@@ -53,12 +53,29 @@
     "type": "error"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "recovered",
+        "type": "address"
+      }
+    ],
     "name": "InvalidAdminSignature",
     "type": "error"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "expected",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "recovered",
+        "type": "address"
+      }
+    ],
     "name": "InvalidPlayerSignature",
     "type": "error"
   },

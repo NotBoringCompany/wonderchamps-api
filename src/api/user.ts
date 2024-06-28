@@ -3,7 +3,9 @@ import { APIResponse, APIResponseStatus } from '../models/api';
 import { WonderchampsUserModel } from '../utils/constants/db';
 import { WONDERBITS_API_BASE_URL } from '../utils/constants/endpoints';
 import * as dotenv from 'dotenv';
-import { DEPLOYER_ACCOUNT, WONDERCHAMPS_CONTRACT } from '../utils/constants/web3';
+import { BASE_SEPOLIA_CLIENT, DEPLOYER_ACCOUNT, USER_ACCOUNT, WALLET_CLIENT, WONDERCHAMPS_ABI, WONDERCHAMPS_CONTRACT } from '../utils/constants/web3';
+import { generateSalt, generateSignature } from '../utils/crypto';
+import { formatUnits } from 'viem';
 
 dotenv.config();
 
@@ -49,16 +51,51 @@ export const checkWeb3AccountExists = async (xId: string): Promise<APIResponse> 
         }
 
         // get the user's wallet address
-        const { address } = userData?.wallet;
+        const { privateKey, address } = userData?.wallet;
+
+        const userAccount = USER_ACCOUNT(privateKey);
 
         // check if the user has a Wonderchamps Web3 account
-        const exists = await WONDERCHAMPS_CONTRACT(DEPLOYER_ACCOUNT).read.playerExists([address]);
+        const exists = await WONDERCHAMPS_CONTRACT(userAccount).read.playerExists([address]);
 
-        // if the user doesn't have a wonderchamps account, send a response to create one.
+        // if the user doesn't have a wonderchamps account, estimate the gas to create one and require
+        // the user to create one.
         if (!exists) {
+            const salt = generateSalt(
+                address,
+                Math.floor(Date.now() / 1000)
+            );
+            console.log(`Salt: ${salt}`);
+
+            const dataHash = await WONDERCHAMPS_CONTRACT(userAccount).read.dataHash([address, salt]);
+            console.log(`Data Hash: ${dataHash}`);
+
+            const signature = await generateSignature(dataHash as `0x${string}`, DEPLOYER_ACCOUNT);
+            console.log(`Signature: ${signature}`);
+
+            const estimatedGasUnits = await BASE_SEPOLIA_CLIENT.estimateContractGas({
+                address: WONDERCHAMPS_CONTRACT(userAccount).address,
+                abi: WONDERCHAMPS_ABI,
+                functionName: 'createPlayer',
+                args: [address, [salt, signature]]
+            });
+
+            const { maxFeePerGas, maxPriorityFeePerGas } = await BASE_SEPOLIA_CLIENT.estimateFeesPerGas();
+            
+            const estimatedGasETH = parseFloat(formatUnits(estimatedGasUnits, 0)) * parseFloat((formatUnits(maxFeePerGas ?? BigInt(1000000), 18) + formatUnits(maxPriorityFeePerGas ?? BigInt(1000000), 18)));
+            
+            const userOwnedETH = await BASE_SEPOLIA_CLIENT.getBalance({
+                address: userAccount.address
+            }).then(balance => parseFloat(formatUnits(balance, 18)));
+
             return {
                 status: APIResponseStatus.NOT_FOUND,
-                message: `(checkWeb3AccountExists) User does not have a Wonderchamps account. Please request to create one.`
+                message: `(checkWeb3AccountExists) User does not have a Wonderchamps account. Please request to create one. Estimated gas to create one is available in the data section.`,
+                data: {
+                    estimatedGasETH,
+                    userOwnedETH: userOwnedETH,
+                    userHasEnoughETH: userOwnedETH >= estimatedGasETH
+                }
             }
         }
 
@@ -67,11 +104,10 @@ export const checkWeb3AccountExists = async (xId: string): Promise<APIResponse> 
             message: `(checkWeb3AccountExists) User has a Wonderchamps account. Login successful.`
         }
     } catch (err: any) {
+        console.log('err: ', err);
         return {
             status: APIResponseStatus.INTERNAL_SERVER_ERROR,
             message: `(checkWeb3AccountExists) Error: ${err.message}`
         }
     }
 }
-
-checkWeb3AccountExists('1465263138643791874');

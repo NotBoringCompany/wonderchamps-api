@@ -44,8 +44,13 @@ export const WALLET_CLIENT = (account: PrivateKeyAccount) => createWalletClient(
 
 /** Instantiates the deployer's account */
 export const DEPLOYER_ACCOUNT = privateKeyToAccount(`0x${process.env.DEPLOYER_PRIVATE_KEY!}`);
-/** Instantiates a user's account given their `privateKey` */
-export const USER_ACCOUNT = (privateKey: string) => privateKeyToAccount(`0x${privateKey}`);
+/** 
+ * Instantiates a user's account given their `privateKey` 
+ *
+ * Because the private key contains `0x` and the `PrivateKeyAccount` expects a private key without `0x`,
+ * the `0x` needs to be trimmed from `privateKey` before passing it to `privateKeyToAccount`.
+ */
+export const USER_ACCOUNT = (privateKey: string) => privateKeyToAccount(`0x${privateKey.replace('0x', '')}`);
 
 /** Fetches the Wonderchamps contract's ABI */
 export const WONDERCHAMPS_ABI = JSON.parse(
