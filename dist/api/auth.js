@@ -7,7 +7,7 @@ exports.handleXAuth = void 0;
 const api_1 = require("../models/api");
 const axios_1 = __importDefault(require("axios"));
 const endpoints_1 = require("../utils/endpoints");
-const db_1 = require("../utils/db");
+const db_1 = require("../utils/constants/db");
 /**
  * Authenticates a user via X (Twitter).
  *

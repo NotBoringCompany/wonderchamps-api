@@ -9,18 +9,11 @@ const api_1 = require("../../models/api");
 const passport_1 = __importDefault(require("../../configs/passport"));
 const auth_1 = require("../../api/auth");
 const router = express_1.default.Router();
-router.get('/test', async (req, res) => {
-    console.log('test is working');
-    return res.status(200).json({
-        status: api_1.APIResponseStatus.SUCCESS,
-        message: 'X Auth route is working.'
-    });
-});
 router.get('/login', async (req, res, next) => {
     // get the jwt token (if it exists) from the request headers
     const token = req.headers.authorization?.split(' ')[1];
-    console.log('token: ', token);
     if (token) {
+        console.log('token is valid');
         // check for validation
         const { status } = (0, jwt_1.validateJWT)(token);
         if (status === api_1.APIResponseStatus.SUCCESS) {
@@ -28,7 +21,7 @@ router.get('/login', async (req, res, next) => {
             return res.redirect(`wonderchamps://x-auth?jwt=${token}`);
         }
         else {
-            console.log('token is invalid. redirecting to X for auth');
+            console.log('token is invalid');
             // token is invalid, redirect to X for authentication
             passport_1.default.authenticate('twitter', {
                 scope: ['tweet.read', 'users.read', 'offline.access'],
@@ -38,6 +31,7 @@ router.get('/login', async (req, res, next) => {
         }
     }
     else {
+        console.log('token doesnt exist. redirecting to callback');
         // token doesn't exist, redirect to X for authentication
         passport_1.default.authenticate('twitter', {
             scope: ['tweet.read', 'users.read', 'offline.access'],
