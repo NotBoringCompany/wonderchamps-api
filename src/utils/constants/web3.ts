@@ -3,6 +3,9 @@ import { privateKeyToAccount } from 'viem/accounts';
 import fs from 'fs';
 import path from 'path';
 
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 /** Base Sepolia details */
 const BASE_SEPOLIA = defineChain({
     id: 84532,
