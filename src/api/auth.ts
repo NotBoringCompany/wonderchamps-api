@@ -65,7 +65,17 @@ export const handleXAuth = async (
         // if user doesn't exist, create a new user instance.
         if (!user) {
             const newUser = new WonderchampsUserModel({
-                _id: wonderbitsUserData.userId
+                _id: wonderbitsUserData.userId,
+                inGameData: {
+                    ownedItemIDs: [],
+                    ownedItemFragmentIDs: [],
+                    claimableItems: [],
+                    claimableItemFragments: [],
+                    claimableIGC: {
+                        marble: 0,
+                        gold: 0
+                    }
+                }
             });
 
             await newUser.save();

@@ -2,9 +2,11 @@ import { APIResponse, APIResponseStatus } from '../models/api';
 import axios from 'axios';
 import { WONDERBITS_API_BASE_URL } from '../utils/constants/endpoints';
 import { ExtendedXProfile } from '../utils/customProfiles';
-import { WonderchampsShopModel, WonderchampsUserModel } from '../utils/constants/db';
+import { WonderbitsUserModel, WonderchampsShopModel, WonderchampsUserModel } from '../utils/constants/db';
 import { ShopItem } from '../models/item';
 import { ShopType } from '../models/shop';
+import { UserWallet } from '../models/wonderbits/user';
+import { USER_ACCOUNT, WONDERCHAMPS_CONTRACT } from '../utils/constants/web3';
 
 /**
  * Adds one or more set of items to a specific shop selling items of `shopType`.
@@ -79,3 +81,63 @@ export const addShopItems = async (
         }
     }
 }
+
+/**
+ * (User) Buys an item from a specific shop.
+ * 
+ * If the user already owns the item, the purchase will be rejected.
+ */
+export const buyItem = async (xId: string, shopType: ShopType, itemId: number, paymentType: 'gold' | 'marble'): Promise<APIResponse> => {
+    try {
+        // const shop = await WonderchampsShopModel.findOne({ shopType }).lean();
+
+        // if (!shop) {
+        //     return {
+        //         status: APIResponseStatus.NOT_FOUND,
+        //         message: `(buyItem) Shop not found.`
+        //     }
+        // }
+
+        const wonderbitsUserData = await WonderbitsUserModel.findOne({ twitterId: xId }).lean();
+
+        if (!wonderbitsUserData) {
+            return {
+                status: APIResponseStatus.NOT_FOUND,
+                message: `(buyItem) User not found in Wonderbits database.`
+            }
+        }
+
+        const user = await WonderchampsUserModel.findOne({ _id: wonderbitsUserData._id }).lean();
+
+        if (!user) {
+            console.log('(buyItem) User not found in Wonderchamps database.');
+
+            return {
+                status: APIResponseStatus.NOT_FOUND,
+                message: `(buyItem) User not found in Wonderchamps database.`
+            }
+        }
+
+        // get the user's wallet
+        const { privateKey, address } = wonderbitsUserData?.wallet as UserWallet;
+
+        const userAccount = USER_ACCOUNT(privateKey);
+
+        // call `getOwnedIGC` to get the owned IGC of the user.
+        const ownedIGC = await WONDERCHAMPS_CONTRACT(userAccount).read.getOwnedIGC([address]);
+        console.log('Owned IGC:', ownedIGC);
+
+        return {
+            status: APIResponseStatus.SUCCESS,
+            message: `(buyItem) Item bought successfully.`,
+        }
+    } catch (err: any) {
+        console.log('(buyItem) Error:', err.message);
+        return {
+            status: APIResponseStatus.INTERNAL_SERVER_ERROR,
+            message: `(buyItem) Error: ${err.message}`
+        }
+    }
+}
+
+// buyItem('1465263138643791874', ShopType.CHARACTERS, 1, 'gold');

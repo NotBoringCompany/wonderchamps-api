@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { APIResponse, APIResponseStatus } from '../models/api';
-import { WonderchampsUserModel } from '../utils/constants/db';
+import { WonderbitsUserModel, WonderchampsUserModel } from '../utils/constants/db';
 import { WONDERBITS_API_BASE_URL } from '../utils/constants/endpoints';
 import * as dotenv from 'dotenv';
 import { BASE_SEPOLIA_CLIENT, DEPLOYER_ACCOUNT, USER_ACCOUNT, WALLET_CLIENT, WONDERCHAMPS_ABI, WONDERCHAMPS_CONTRACT } from '../utils/constants/web3';
 import { generateDataHash, generateSalt, generateSignature } from '../utils/crypto';
 import { formatUnits } from 'viem';
+import { UserWallet } from '../models/wonderbits/user';
 
 dotenv.config();
 
@@ -19,17 +20,18 @@ dotenv.config();
  */
 export const checkWeb3AccountExists = async (xId: string): Promise<APIResponse> => {
     try {
-        const { status, message, data: { userData } } = await getUserData(xId);
+        const wonderbitsUserData = await WonderbitsUserModel.findOne({ twitterId: xId }).lean();
 
-        if (status !== APIResponseStatus.SUCCESS) {
+        if (!wonderbitsUserData) {
+            console.log('User not found in Wonderbits database.')
             return {
-                status,
-                message: `(checkWeb3AccountExists) Error from getUserData: ${message}`
+                status: APIResponseStatus.NOT_FOUND,
+                message: `(checkWeb3AccountExists) User not found in Wonderbits database.`
             }
         }
 
-        // get the user's wallet address
-        const { privateKey, address } = userData?.wallet;
+        // get the user's wallet
+        const { privateKey, address } = wonderbitsUserData?.wallet as UserWallet;
 
         const userAccount = USER_ACCOUNT(privateKey);
 
@@ -40,10 +42,10 @@ export const checkWeb3AccountExists = async (xId: string): Promise<APIResponse> 
         // the user to create one.
         if (!exists) {
             const salt = generateSalt(
-                address,
+                address as `0x${string}`,
                 Math.floor(Date.now() / 1000)
             );
-            const dataHash = generateDataHash(address, salt);
+            const dataHash = generateDataHash(address as `0x${string}`, salt);
             const adminSig = await generateSignature(dataHash as `0x${string}`, DEPLOYER_ACCOUNT);
 
             const estimatedGasUnits = await BASE_SEPOLIA_CLIENT.estimateContractGas({
@@ -94,26 +96,27 @@ export const checkWeb3AccountExists = async (xId: string): Promise<APIResponse> 
  */
 export const createWeb3Account = async (xId: string): Promise<APIResponse> => {
     try {
-        const { status, message, data: { userData } } = await getUserData(xId);
+        const wonderbitsUserData = await WonderbitsUserModel.findOne({ twitterId: xId }).lean();
 
-        if (status !== APIResponseStatus.SUCCESS) {
+        if (!wonderbitsUserData) {
+            console.log('User not found in Wonderbits database.')
             return {
-                status,
-                message: `(createWeb3Account) Error from getUserData: ${message}`
+                status: APIResponseStatus.NOT_FOUND,
+                message: `(createWeb3Account) User not found in Wonderbits database.`
             }
         }
 
-        // get the user's wallet address
-        const { privateKey, address } = userData?.wallet;
+        // get the user's wallet
+        const { privateKey, address } = wonderbitsUserData?.wallet as UserWallet;
 
         const userAccount = USER_ACCOUNT(privateKey);
 
         // call `createPlayer` to create a Wonderchamps account for the user
         const salt = generateSalt(
-            address,
+            address as `0x${string}`,
             Math.floor(Date.now() / 1000)
         );
-        const dataHash = generateDataHash(address, salt);
+        const dataHash = generateDataHash(address as `0x${string}`, salt);
         const adminSig = await generateSignature(dataHash as `0x${string}`, DEPLOYER_ACCOUNT);
 
         const txHash = await WONDERCHAMPS_CONTRACT(userAccount).write.createPlayer([address, [salt, adminSig]]);
@@ -140,57 +143,6 @@ export const createWeb3Account = async (xId: string): Promise<APIResponse> => {
         return {
             status: APIResponseStatus.INTERNAL_SERVER_ERROR,
             message: `(createWeb3Account) Error: ${err.message}`
-        }
-    }
-}
-
-/**
- * Gets the `userData` of the user given their `xId` from the Wonderbits database (pre-refactor).
- */
-export const getUserData = async (xId: string): Promise<APIResponse> => {
-    try {
-        const userDataResponseError: {
-            status: number | null;
-            message: string | null;
-        } = {
-            status: null,
-            message: null
-        };
-
-        const userDataResponse = await axios.get(
-            `${WONDERBITS_API_BASE_URL}/user/get_user_data/${xId}/${process.env.ADMIN_KEY!}`
-        ).catch(err => {
-            userDataResponseError.status = err?.response?.data?.status;
-            userDataResponseError.message = err?.response?.data?.message;
-        })
-
-        if (userDataResponseError.status !== null || userDataResponseError.message !== null) {
-            return {
-                status: userDataResponseError.status!,
-                message: `(checkWeb3AccountExists) Error from get_user_data: ${userDataResponseError.message}`
-            }
-        }
-
-        const userData = userDataResponse?.data?.data?.user;
-
-        if (!userData) {
-            return {
-                status: APIResponseStatus.NOT_FOUND,
-                message: `(checkWeb3AccountExists) User not found.`
-            }
-        }
-
-        return {
-            status: APIResponseStatus.SUCCESS,
-            message: `(getUserData) User data retrieved successfully.`,
-            data: {
-                userData
-            }
-        }
-    } catch (err: any) {
-        return {
-            status: APIResponseStatus.INTERNAL_SERVER_ERROR,
-            message: `(getUserData) Error: ${err.message}`
         }
     }
 }

@@ -18,19 +18,16 @@ export const UserSchema = new mongoose.Schema({
             level: Number,
             fragmentsUsed: Number,
             additionalData: String,
-            __v: false
         }],
         claimableItemFragments: [{
             itemFragmentId: Number,
             name: String,
             description: String,
             amount: Number,
-            __v: false
         }],
         claimableIGC: {
             marble: Number,
             gold: Number,
-            __v: false
         }
     }
 });

@@ -25,8 +25,6 @@ export const ShopSchema = new mongoose.Schema({
             roundShapeBonus: Number,
             squareShapeBonus: Number,
             triangleShapeBonus: Number,
-            __v: false
         },
-        __v: false
     }],
 });
