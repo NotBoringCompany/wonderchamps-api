@@ -13,11 +13,20 @@ import { ShopType } from '../models/shop';
  * 
  * NOTE: If one or more of the items already exist, they will be skipped.
  */
-export const addShopItem = async (
+export const addShopItems = async (
     shopType: ShopType,
-    items: ShopItem[]
+    items: ShopItem[],
+    adminKey: string
 ): Promise<APIResponse> => {
     try {
+        // check if the admin key is valid.
+        if (adminKey !== process.env.ADMIN_KEY) {
+            return {
+                status: APIResponseStatus.UNAUTHORIZED,
+                message: `(addShopItem) Unauthorized. Invalid admin key.`
+            }
+        }
+
         const shop = await WonderchampsShopModel.findOne({ shopType }).lean();
 
         // if the shop doesn't exist yet, we can safely add all the items.
