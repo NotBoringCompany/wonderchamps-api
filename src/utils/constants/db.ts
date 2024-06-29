@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { UserSchema } from '../../schema/User';
+import { ShopSchema } from '../../schema/Shop';
 
 const WONDERBITS_MONGODB_URI = process.env.WONDERBITS_MONGODB_URI!;
 const WONDERCHAMPS_MONGODB_URI = process.env.WONDERCHAMPS_MONGODB_URI!;
@@ -24,3 +25,4 @@ WONDERCHAMPS_CONNECTION.on('error', (err) => {
 });
 
 export const WonderchampsUserModel = WONDERCHAMPS_CONNECTION.model('Users', UserSchema, 'Users');
+export const WonderchampsShopModel = WONDERCHAMPS_CONNECTION.model('Shop', ShopSchema, 'Shop');
