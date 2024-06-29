@@ -1,3 +1,6 @@
+import { UserIGC } from './igc';
+import { UserItem, UserItemFragment } from './item';
+
 /**
  * Represents a user.
  * 
@@ -14,4 +17,24 @@ export interface User {
      * corresponds to the database ID of the user in the Wonderbits database.
      */
     userId: string;
+    /**
+     * the user's in-game data.
+     */
+    inGameData: InGameData;
+}
+
+/**
+ * Represents the in-game data of a user.
+ */
+export interface InGameData {
+    // the user's owned item IDs
+    ownedItemIDs: number[];
+    // the user's owned item fragment IDs
+    ownedItemFragmentIDs: number[];
+    /** all claimable items the user can claim to be added to their Web3 account. */
+    claimableItems: UserItem[];
+    /** all claimable item fragments the user can claim to be added to their Web3 account. */
+    claimableItemFragments: UserItemFragment[];
+    /** the claimable marble and gold (in-game currencies) the user can claim to be added to their Web3 account. */
+    claimableIGC: UserIGC;
 }
