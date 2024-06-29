@@ -23,4 +23,6 @@ router.post('/add_shop_items', async (req, res) => {
             message: `(add_shop_items) Error: ${err.message}`
         });
     }
-})
+});
+
+export default router;

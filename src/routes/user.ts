@@ -49,3 +49,5 @@ router.post('/create_web3_account', async (req, res) => {
         });
     }
 })
+
+export default router;
