@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
-    "build": "tsc"
+    "build": "tsc && npm run copy-abi",
+    "copy-abi": "copyfiles -u 1 src/abi/**/* dist/"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
     "@types/express-session": "^1.18.0",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.8",
+    "copyfiles": "^2.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.2"
   },
