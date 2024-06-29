@@ -252,9 +252,9 @@
             "type": "uint256"
           }
         ],
-        "internalType": "struct IItemFragment.OwnedItemFragment",
-        "name": "fragment",
-        "type": "tuple"
+        "internalType": "struct IItemFragment.OwnedItemFragment[]",
+        "name": "fragments",
+        "type": "tuple[]"
       },
       {
         "internalType": "bytes[2]",
@@ -262,7 +262,7 @@
         "type": "bytes[2]"
       }
     ],
-    "name": "addItemFragmentToInventory",
+    "name": "addItemFragmentsToInventory",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -292,9 +292,9 @@
             "type": "bytes[]"
           }
         ],
-        "internalType": "struct IItem.OwnedItem",
-        "name": "item",
-        "type": "tuple"
+        "internalType": "struct IItem.OwnedItem[]",
+        "name": "items",
+        "type": "tuple[]"
       },
       {
         "internalType": "bytes[2]",
@@ -302,7 +302,7 @@
         "type": "bytes[2]"
       }
     ],
-    "name": "addItemToInventory",
+    "name": "addItemsToInventory",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -739,9 +739,9 @@
         "type": "address"
       },
       {
-        "internalType": "uint256",
-        "name": "fragmentId",
-        "type": "uint256"
+        "internalType": "uint256[]",
+        "name": "fragmentIds",
+        "type": "uint256[]"
       },
       {
         "internalType": "bytes[3]",
@@ -749,7 +749,7 @@
         "type": "bytes[3]"
       }
     ],
-    "name": "removeItemFragmentFromInventory",
+    "name": "removeItemFragmentsFromInventory",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -762,9 +762,9 @@
         "type": "address"
       },
       {
-        "internalType": "uint256",
-        "name": "itemId",
-        "type": "uint256"
+        "internalType": "uint256[]",
+        "name": "itemIds",
+        "type": "uint256[]"
       },
       {
         "internalType": "bytes[3]",
@@ -772,7 +772,7 @@
         "type": "bytes[3]"
       }
     ],
-    "name": "removeItemFromInventory",
+    "name": "removeItemsFromInventory",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
