@@ -80,6 +80,8 @@ export const handleXAuth = async (
 
             await newUser.save();
 
+            console.log('(handleXAuth) Wonderchamps account created successfully. User ID: ', wonderbitsUserData.userId);
+
             return {
                 status: APIResponseStatus.SUCCESS,
                 message: `(handleXAuth) Wonderchamps account created successfully.`,
