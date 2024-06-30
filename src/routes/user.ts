@@ -37,6 +37,10 @@ router.post('/create_web3_account', async (req, res) => {
 
         const { status, message, data } = await createWeb3Account(validateData?.xId);
 
+        console.log('status: ', status);
+        console.log('message: ', message);
+        console.log('data: ', data);
+
         return res.status(status).json({
             status,
             message,
