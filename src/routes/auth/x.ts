@@ -105,7 +105,8 @@ router.get('/callback', passport.authenticate('twitter', { failureRedirect: 'htt
 // admin login which bypasses requiring to login via X, but has the same flow as the regular login.
 // used for testing purposes.
 router.post('/admin_login', async (req, res) => {
-    const { xId, xAccessToken, xRefreshToken, username, photos, profileUrl, provider, displayName } = req.body;
+    console.log(req.body);
+    const { xId, xAccessToken, xRefreshToken, username, photos, profileUrl, provider, displayName } = req.body.data;
 
     try {
         const { status, message, data } = await handleXAuth(
