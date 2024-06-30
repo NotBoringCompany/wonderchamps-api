@@ -132,7 +132,7 @@ export const createWeb3Account = async (xId: string): Promise<APIResponse> => {
 
     } catch (err: any) {
         // most likely due to the Web3 account already existing or lack of funds to pay for gas.
-        if (err.message.includes('Execution reverted')) {
+        if (err.message.includes('Execution reverted') || err.message.includes('exceeds the balance')) {
             return {
                 status: APIResponseStatus.FORBIDDEN,
                 message: `(createWeb3Account) User either already exists or does not have enough funds to create an account. Detailed error: ${err.message}`
