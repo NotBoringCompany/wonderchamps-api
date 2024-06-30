@@ -132,11 +132,13 @@ router.post('/admin_login', async (req, res) => {
         } else {
             const token = generateJWT(xId, xAccessToken, xRefreshToken);
 
-            console.log('status success. token generated from callback: ', token);
-            console.log('redirecting to: ', `https://wonderchamps-api.up.railway.app/auth/x/success?jwt=${token}`);
-            
-            // custom redirect to be intercepted by unity
-            return res.redirect(`https://wonderchamps-api.up.railway.app/auth/x/success?jwt=${token}`);
+            return res.status(status).json({
+                status,
+                message,
+                data: {
+                    JWT: token
+                }
+            });
         }
     } catch (err: any) {
         return res.status(500).json({
