@@ -338,7 +338,7 @@ export const buyItem = async (xId: string, shopType: ShopType, itemId: number, p
 /**
  * Get all items from a specific shop.
  */
-export const getAllShopItems = async (shopType?: ShopType): Promise<APIResponse> => {
+export const getShopItems = async (shopType?: ShopType): Promise<APIResponse> => {
     try {
         if (!shopType) {
             return {

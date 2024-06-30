@@ -2,7 +2,7 @@ import express from 'express';
 import { checkWeb3AccountExists, createWeb3Account } from '../api/user';
 import { validateRequestAuth } from '../utils/auth';
 import { APIResponseStatus } from '../models/api';
-import { addShopItems, buyItem, getAllShopItems } from '../api/shop';
+import { addShopItems, buyItem, getShopItems } from '../api/shop';
 import { authMiddleware } from '../middlewares/auth';
 import { ShopType } from '../models/shop';
 
@@ -31,7 +31,7 @@ router.get('/get_shop_items', authMiddleware(3), async (req, res) => {
     const { shopType } = req.query;
 
     try {
-        const { status, message, data } = await getAllShopItems(shopType as ShopType | undefined);
+        const { status, message, data } = await getShopItems(shopType as ShopType | undefined);
 
         return res.status(status).json({
             status,
