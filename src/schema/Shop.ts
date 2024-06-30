@@ -13,9 +13,14 @@ export const ShopSchema = new mongoose.Schema({
         itemId: Number,
         name: String,
         description: String,
+        level: Number,
         stock: Number,
         marblePrice: Number,
         goldPrice: Number,
+        vehicleStats: {
+            baseSpeed: Number,
+            speedLimit: Number,
+        },
         bonusStats: {
             landBonus: Number,
             airBonus: Number,

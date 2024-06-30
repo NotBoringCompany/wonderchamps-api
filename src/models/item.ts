@@ -51,14 +51,28 @@ export interface UserItemFragment extends ItemFragment {
  * Represents an item in the shop.
  */
 export interface ShopItem extends Item {
+    /** the item's level. useful if the item being sold is sold at a higher level. else, default to 1. */
+    level: number;
     /** how much of this item is still in stock. if not purchasable, set to 0. */
     stock: number;
     /** the price of the item in marble. */
     marblePrice: number;
     /** the price of the item in gold. */
     goldPrice: number;
+    /** vehicle stats (such as base speed and speed limit). only applicable to vehicles. */
+    vehicleStats?: VehicleStats;
     /** optional: if this item has bonus stats, they will be added here. */
     bonusStats?: ItemBonusStats;
+}
+
+/**
+ * Represents the stats of a vehicle item.
+ */
+export interface VehicleStats {
+    /** the base speed of the vehicle */
+    baseSpeed: number;
+    /** the speed limit of the vehicle */
+    speedLimit: number;
 }
 
 /**
@@ -75,4 +89,16 @@ export interface ItemBonusStats {
     roundShapeBonus?: number;
     squareShapeBonus?: number;
     triangleShapeBonus?: number;
+}
+
+/**
+ * Represents the user model used in the Wonderchamps contract.
+ */
+export interface Web3UserItem {
+    /** if the user owns the item */
+    owned: boolean;
+    /** the numData of the item */
+    numData: number;
+    /** any additional data of the item */
+    additionalData: string[];
 }
