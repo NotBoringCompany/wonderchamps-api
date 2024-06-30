@@ -3,6 +3,7 @@ import axios from 'axios';
 import { WONDERBITS_API_BASE_URL } from '../utils/constants/endpoints';
 import { ExtendedXProfile } from '../utils/customProfiles';
 import { WonderchampsUserModel } from '../utils/constants/db';
+import { Creds } from '../models/user';
 
 /**
  * Authenticates a user via X (Twitter).
@@ -102,3 +103,27 @@ export const handleXAuth = async (
         }
     }
 }
+
+/**
+ * This function is used to verify a token from the Wonderverse backend.
+ *
+ * @param token Token obtained from the Wonderverse backend.
+ * @returns Promise<ReturnValue> The result of the token verification.
+ */
+export const verifyToken = async (token: string): Promise<APIResponse<Creds>> => {
+    try {
+        const res = await axios.get(`${WONDERBITS_API_BASE_URL}/auth/me`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return res.data;
+    } catch (err: any) {
+        return {
+            status: err.response?.data?.status ?? APIResponseStatus.INTERNAL_SERVER_ERROR,
+            message: `(verifyToken) ${err.response?.data?.message ?? 'Authorization failed'}`,
+            data: undefined,
+        };
+    }
+};

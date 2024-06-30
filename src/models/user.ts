@@ -38,3 +38,17 @@ export interface InGameData {
     /** the claimable marble and gold (in-game currencies) the user can claim to be added to their Web3 account. */
     claimableIGC: UserIGC;
 }
+
+export type Creds = {
+    id: string;
+    name: string;
+    username: string;
+    method: string;
+    role: number;
+};
+
+export type Authenticated = {
+    creds: Creds;
+    token: string;
+};
+
