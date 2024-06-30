@@ -145,3 +145,32 @@ export const createWeb3Account = async (xId: string): Promise<APIResponse> => {
         }
     }
 }
+
+/**
+ * Gets the user's wallet data.
+ */
+export const getUserWallet = async (xId: string): Promise<APIResponse> => {
+    try {
+        const wonderbitsUserData = await WonderbitsUserModel.findOne({ twitterId: xId }).lean();
+
+        if (!wonderbitsUserData) {
+            return {
+                status: APIResponseStatus.NOT_FOUND,
+                message: `(getUserWallet) User not found in Wonderbits database.`
+            }
+        }
+
+        return {
+            status: APIResponseStatus.SUCCESS,
+            message: `(getUserWallet) User wallet data retrieved successfully.`,
+            data: {
+                wallet: wonderbitsUserData.wallet
+            }
+        }
+    } catch (err: any) {
+        return {
+            status: APIResponseStatus.INTERNAL_SERVER_ERROR,
+            message: `(getUserWallet) Error: ${err.message}`
+        }
+    }
+}
