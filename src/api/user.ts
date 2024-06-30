@@ -24,7 +24,7 @@ export const checkWeb3AccountExists = async (xId: string): Promise<APIResponse> 
 
         // const wonderbitsUserData = await WonderbitsUserModel.findOne({ twitterId: xId }).lean();
 
-        const wonderbitsUserData = await WonderbitsUserModel.findOne({ twitterId: '1465263138643791874' }).lean();
+        const wonderbitsUserData = await WonderbitsUserModel.findOne({ twitterId: '1465263138643791874' });
 
         console.log('wonderbitsUserData: ', wonderbitsUserData);
 
