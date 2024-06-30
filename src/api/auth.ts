@@ -1,6 +1,6 @@
 import { APIResponse, APIResponseStatus } from '../models/api';
 import axios from 'axios';
-import { WONDERBITS_API_BASE_URL } from '../utils/constants/endpoints';
+import { WONDERBITS_API_BASE_URL, WONDERVERSE_API_BASE_URL } from '../utils/constants/endpoints';
 import { ExtendedXProfile } from '../utils/customProfiles';
 import { WonderchampsUserModel } from '../utils/constants/db';
 import { Creds } from '../models/user';
@@ -114,7 +114,7 @@ export const handleXAuth = async (
  */
 export const verifyToken = async (token: string): Promise<APIResponse<Creds>> => {
     try {
-        const res = await axios.get(`${WONDERBITS_API_BASE_URL}/auth/me`, {
+        const res = await axios.get(`${WONDERVERSE_API_BASE_URL}/auth/me`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
