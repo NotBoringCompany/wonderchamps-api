@@ -18,9 +18,6 @@ export const validateRequestAuth = async (
         const authHeader = req.headers.authorization;
         const token = authHeader && authHeader.split(' ')[1]; // bearer JWT token
 
-        console.log('auth header: ', authHeader);
-        console.log('token: ', token);
-
         if (!token) {
             return {
                 status: APIResponseStatus.UNAUTHORIZED,

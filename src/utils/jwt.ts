@@ -40,9 +40,9 @@ export const validateJWT = (token: string): APIResponse => {
         if (
             typeof decoded !== 'string' 
             && 'xId' in decoded
-            && 'xAccessToken' in decoded
-            && 'xRefreshToken' in decoded
-            && 'xExpiresIn' in decoded
+            // && 'xAccessToken' in decoded
+            // && 'xRefreshToken' in decoded
+            // && 'xExpiresIn' in decoded
         ) {
             return {
                 status: APIResponseStatus.SUCCESS,
