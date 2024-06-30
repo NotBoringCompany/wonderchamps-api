@@ -102,6 +102,20 @@ router.get('/callback', passport.authenticate('twitter', { failureRedirect: 'htt
     }
 });
 
+// // admin login which bypasses requiring to login via X, but has the same flow as the regular login.
+// // used for testing purposes.
+// router.post('/admin_login', async (req, res) => {
+//     const { xId, }
+//     try {
+
+//     } catch (err: any) {
+//         return res.status(500).json({
+//             status: APIResponseStatus.INTERNAL_SERVER_ERROR,
+//             message: `(auth_x_admin_login) Error: ${err.message}`
+//         });
+//     }
+// })
+
 router.get('/success', (req, res) => {
     const token = req.query.jwt as string;
 

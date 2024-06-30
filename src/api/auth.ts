@@ -15,6 +15,8 @@ export const handleXAuth = async (
     xProfile?: ExtendedXProfile | null
 ): Promise<APIResponse> => {
     try {
+        console.log('x profile handleXAuth: ', xProfile);
+        
         let wonderbitsUserData: {
             userId: string | null;
         } = {
