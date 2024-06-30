@@ -24,7 +24,7 @@ export const checkWeb3AccountExists = async (xId: string): Promise<APIResponse> 
 
         if (!wonderbitsUserData) {
             return {
-                status: APIResponseStatus.UNAUTHORIZED,
+                status: APIResponseStatus.NOT_FOUND,
                 message: `(checkWeb3AccountExists) User not found in Wonderbits database.`
             }
         }
