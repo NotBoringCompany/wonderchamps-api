@@ -102,19 +102,49 @@ router.get('/callback', passport.authenticate('twitter', { failureRedirect: 'htt
     }
 });
 
-// // admin login which bypasses requiring to login via X, but has the same flow as the regular login.
-// // used for testing purposes.
-// router.post('/admin_login', async (req, res) => {
-//     const { xId, }
-//     try {
+// admin login which bypasses requiring to login via X, but has the same flow as the regular login.
+// used for testing purposes.
+router.post('/admin_login', async (req, res) => {
+    const { xId, xAccessToken, xRefreshToken, username, photos, profileUrl, provider, displayName } = req.body;
 
-//     } catch (err: any) {
-//         return res.status(500).json({
-//             status: APIResponseStatus.INTERNAL_SERVER_ERROR,
-//             message: `(auth_x_admin_login) Error: ${err.message}`
-//         });
-//     }
-// })
+    try {
+        const { status, message, data } = await handleXAuth(
+            xId,
+            {
+                id: xId,
+                xAccessToken,
+                xRefreshToken,
+                // 1 day expiry date
+                xExpiryDate: Math.floor(Date.now() / 1000) + 86400,
+                username,
+                photos,
+                profileUrl,
+                provider,
+                displayName
+            }
+        );
+
+        if (status !== APIResponseStatus.SUCCESS) {
+            return res.status(status).json({
+                status,
+                message
+            });
+        } else {
+            const token = generateJWT(xId, xAccessToken, xRefreshToken);
+
+            console.log('status success. token generated from callback: ', token);
+            console.log('redirecting to: ', `https://wonderchamps-api.up.railway.app/auth/x/success?jwt=${token}`);
+            
+            // custom redirect to be intercepted by unity
+            return res.redirect(`https://wonderchamps-api.up.railway.app/auth/x/success?jwt=${token}`);
+        }
+    } catch (err: any) {
+        return res.status(500).json({
+            status: APIResponseStatus.INTERNAL_SERVER_ERROR,
+            message: `(auth_x_admin_login) Error: ${err.message}`
+        });
+    }
+})
 
 router.get('/success', (req, res) => {
     const token = req.query.jwt as string;
