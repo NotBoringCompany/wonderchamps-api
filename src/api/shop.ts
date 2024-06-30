@@ -314,18 +314,31 @@ export const buyItem = async (xId: string, shopType: ShopType, itemId: number, p
         console.log('(buyItem) Add Item Tx Hash:', addItemsTxHash);
 
         // at this point, the user has successfully bought the item.
-        // reduce stock of the item in the shop by 1.
+        // do two things:
+        // 1. reduce the item's stock by 1.
+        // 2. add the itemId to the user's `inGameData.ownedItemIDs` array.
         const itemIndex = shop.items.findIndex(shopItem => shopItem.itemId === itemId);
 
         await WonderchampsShopModel.updateOne({ shopType }, {
             $set: {
                 [`items.${itemIndex}.stock`]: item.stock - 1
             }
-        });         
+        });   
+        
+        await WonderchampsUserModel.updateOne({ _id: user._id }, {
+            $push: {
+                'inGameData.ownedItemIDs': itemId
+            }
+        });
 
         return {
             status: APIResponseStatus.SUCCESS,
             message: `(buyItem) Item bought successfully.`,
+            data: {
+                updatedIGCTxHash: igcTxHash,
+                addItemTxHash: addItemsTxHash,
+                itemBought: item
+            }
         }
     } catch (err: any) {
         console.log('(buyItem) Error:', err.message);
