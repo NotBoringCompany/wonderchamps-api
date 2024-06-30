@@ -2,6 +2,16 @@ import CryptoJS from 'crypto-js';
 import { PrivateKeyAccount, encodePacked, keccak256 } from 'viem';
 import { BASE_SEPOLIA_CLIENT, WALLET_CLIENT } from './constants/web3';
 
+/**
+ * Generates a random Object ID for MongoDB collections.
+ */
+export const generateObjectId = (): string => {
+    const randomBytes = CryptoJS.lib.WordArray.random(16); // Generate 16 random bytes
+    const id = CryptoJS.enc.Hex.stringify(randomBytes); // Convert random bytes to hex string
+
+    return id;
+}
+
 /** Generates a WordArray of random bytes with length `length`. */
 export const randomBytes = (length: number): string => CryptoJS.lib.WordArray.random(length).toString(CryptoJS.enc.Hex);
 
