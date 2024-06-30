@@ -3,14 +3,15 @@ import { checkWeb3AccountExists, createWeb3Account } from '../api/user';
 import { validateRequestAuth } from '../utils/auth';
 import { APIResponseStatus } from '../models/api';
 import { addShopItems, buyItem } from '../api/shop';
+import { authMiddleware } from '../middlewares/auth';
 
 const router = express.Router();
 
-router.post('/add_shop_items', async (req, res) => {
-    const { shopType, items, adminKey } = req.body;
+router.post('/add_shop_items', authMiddleware(3), async (req, res) => {
+    const { shopType, items } = req.body;
 
     try {
-        const { status, message, data } = await addShopItems(shopType, items, adminKey);
+        const { status, message, data } = await addShopItems(shopType, items);
 
         return res.status(status).json({
             status,
