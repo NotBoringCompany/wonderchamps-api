@@ -21,8 +21,10 @@ dotenv.config();
 export const checkWeb3AccountExists = async (xId: string): Promise<APIResponse> => {
     try {
         console.log('xId: ', xId);
-        
-        const wonderbitsUserData = await WonderbitsUserModel.findOne({ twitterId: xId }).lean();
+
+        // const wonderbitsUserData = await WonderbitsUserModel.findOne({ twitterId: xId }).lean();
+
+        const wonderbitsUserData = await WonderbitsUserModel.findOne({ twitterId: '1465263138643791874' }).lean();
 
         console.log('wonderbitsUserData: ', wonderbitsUserData);
 
