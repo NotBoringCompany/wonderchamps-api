@@ -290,7 +290,7 @@ export const buyItem = async (xId: string, shopType: ShopType, itemId: number, p
         // now, convert the bonus stats of the item into a string.
         const bonusStatsString = item.bonusStats ? formatBonusStats(item.bonusStats) : '';
         // convert the string into a bytes array.
-        const additionalData = stringToBytes(bonusStatsString);
+        const bonusStatsBytes = stringToBytes(bonusStatsString);
 
         // additional numerical data within the item's `numData`.
         // NOT to be confused with `additionalData`, which is used for buffs and so on.
@@ -312,7 +312,7 @@ export const buyItem = async (xId: string, shopType: ShopType, itemId: number, p
                             0,
                             additionalNumericalData                            
                         ),
-                        additionalData
+                        additionalData: [bonusStatsBytes]
                     }
                 ],
                 [salt, adminSig]
