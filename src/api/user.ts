@@ -23,7 +23,6 @@ export const checkWeb3AccountExists = async (xId: string): Promise<APIResponse> 
         const wonderbitsUserData = await WonderbitsUserModel.findOne({ twitterId: xId }).lean();
 
         if (!wonderbitsUserData) {
-            console.log('User not found in Wonderbits database.')
             return {
                 status: APIResponseStatus.NOT_FOUND,
                 message: `(checkWeb3AccountExists) User not found in Wonderbits database.`
