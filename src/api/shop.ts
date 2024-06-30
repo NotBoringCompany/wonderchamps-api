@@ -334,3 +334,40 @@ export const buyItem = async (xId: string, shopType: ShopType, itemId: number, p
         }
     }
 }
+
+/**
+ * Get all items from a specific shop.
+ */
+export const getAllShopItems = async (shopType?: ShopType): Promise<APIResponse> => {
+    try {
+        // Construct the query object
+        const query: { shopType?: ShopType } = {};
+        if (shopType) {
+            query.shopType = shopType;
+        }
+
+        // Execute the query
+        const shops = await WonderchampsShopModel.find(query).lean();
+
+        if (shops.length === 0) {
+            return {
+                status: APIResponseStatus.NOT_FOUND,
+                message: `(getAllShopItems) ${shopType ? `Shop not found for type ${shopType}.` : 'No shops found.'}`
+            };
+        }
+
+        // Aggregate all items
+        const items = shops.flatMap(shop => shop.items);
+
+        return {
+            status: APIResponseStatus.SUCCESS,
+            message: `(getAllShopItems) Shop items fetched successfully.`,
+            data: items
+        };
+    } catch (err: any) {
+        return {
+            status: APIResponseStatus.INTERNAL_SERVER_ERROR,
+            message: `(getAllShopItems) Error: ${err.message}`
+        };
+    }
+}

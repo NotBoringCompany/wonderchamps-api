@@ -2,8 +2,9 @@ import express from 'express';
 import { checkWeb3AccountExists, createWeb3Account } from '../api/user';
 import { validateRequestAuth } from '../utils/auth';
 import { APIResponseStatus } from '../models/api';
-import { addShopItems, buyItem } from '../api/shop';
+import { addShopItems, buyItem, getAllShopItems } from '../api/shop';
 import { authMiddleware } from '../middlewares/auth';
+import { ShopType } from '../models/shop';
 
 const router = express.Router();
 
@@ -12,6 +13,25 @@ router.post('/add_shop_items', authMiddleware(3), async (req, res) => {
 
     try {
         const { status, message, data } = await addShopItems(shopType, items);
+
+        return res.status(status).json({
+            status,
+            message,
+            data
+        });
+    } catch (err: any) {
+        return res.status(APIResponseStatus.INTERNAL_SERVER_ERROR).json({
+            status: APIResponseStatus.INTERNAL_SERVER_ERROR,
+            message: `(add_shop_items) Error: ${err.message}`
+        });
+    }
+});
+
+router.get('/get_shop_items', authMiddleware(3), async (req, res) => {
+    const { shopType } = req.query;
+
+    try {
+        const { status, message, data } = await getAllShopItems(shopType as ShopType | undefined);
 
         return res.status(status).json({
             status,
