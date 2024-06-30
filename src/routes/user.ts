@@ -9,6 +9,8 @@ router.get('/check_web3_account_exists/:xId', async (req, res) => {
     const { xId } = req.params;
 
     try {
+        console.log('xid: ', xId);
+        
         const { status, message, data } = await checkWeb3AccountExists(xId);
 
         return res.status(status).json({
