@@ -27,6 +27,8 @@ export const validateJWT = (token: string): APIResponse => {
     try {
         const decoded = verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
+        console.log('decoded: ', decoded);
+
         // check for token expiration
         if (!decoded.exp || decoded.exp < Math.floor(Date.now() / 1000)) {
             return {
@@ -47,8 +49,8 @@ export const validateJWT = (token: string): APIResponse => {
                 message: `(validateJWT) Token is valid.`,
                 data: {
                     xId: decoded.xId,
-                    xAccessToken: decoded.xAccessToken,
-                    xRefreshToken: decoded.xRefreshToken,
+                    xAccessToken: decoded.xAccessToken ?? '',
+                    xRefreshToken: decoded.xRefreshToken ?? '',
                     xExpiresIn: decoded.exp - Math.floor(Date.now() / 1000),
                     jwtExpiry: decoded.exp
                 }
@@ -69,3 +71,5 @@ export const validateJWT = (token: string): APIResponse => {
         }
     }
 }
+
+validateJWT('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ4SWQiOiJhZG1feGlkXzEiLCJ4RXhwaXJlc0luIjo4NjQwMCwiaWF0IjoxNzE5Nzg3MjYzLCJleHAiOjE3MTk4NzM2NjN9.ITeNjYx9gSM7Y3dzA3Pk5WA6d9FDqWHZTlU8K-nwhFc');
