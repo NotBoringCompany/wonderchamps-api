@@ -26,10 +26,12 @@ app.use(passport.session());
 import xAuth from './routes/auth/x';
 import user from './routes/user';
 import shop from './routes/shop';
+import item from './routes/item';
 
 app.use('/auth/x', xAuth);
 app.use('/user', user);
 app.use('/shop', shop);
+app.use('/item', item);
 
 app.listen(port, async () => {
     console.log(`Server running on port ${port}`);
