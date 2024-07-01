@@ -34,3 +34,5 @@ router.post('/claim_claimable_items', async (req, res) => {
         });
     }
 })
+
+export default router;
