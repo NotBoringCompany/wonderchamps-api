@@ -1,3 +1,5 @@
+import { Widen } from 'viem';
+
 /**
  * Represents the base model of an item.
  */
@@ -26,17 +28,16 @@ export interface ItemFragment {
  * Represents an item owned by a user.
  */
 export interface UserItem extends Item {
+    /** the item's type */
+    itemType: ItemType;
     /** the item's level. */
     level: number;
     /** the fragments used so far. used primarily to level up `level`. */
     fragmentsUsed: number;
-    /** 
-     * any additional data for the item. 
-     * 
-     * NOTE: this is in the form of a string such that it's intercompatible with the smart contract to add additional data of type `bytes`.
-     * Depending on specific requirements, `additionalData` will be decoded accordingly.
-     */
-    additionalData: string;
+    /** vehicle stats (such as base speed and speed limit). only applicable to vehicles. */
+    vehicleStats?: VehicleStats;
+    /** optional: if this item has bonus stats, they will be added here. */
+    bonusStats?: ItemBonusStats;
 }
 
 /**
@@ -92,13 +93,23 @@ export interface ItemBonusStats {
 }
 
 /**
+ * Represents the different types of items.
+ */
+export enum ItemType {
+    CHARACTER = 'Character',
+    VEHICLE = 'Vehicle',
+    WHEEL = 'Wheel',
+    GADGET = 'Gadget'
+}
+
+/**
  * Represents the user model used in the Wonderchamps contract.
  */
 export interface Web3UserItem {
     /** if the user owns the item */
     owned: boolean;
     /** the numData of the item */
-    numData: number;
+    numData: bigint;
     /** any additional data of the item */
-    additionalData: string[];
+    additionalData: `0x${string}`[] | string[] | Uint8Array[];
 }

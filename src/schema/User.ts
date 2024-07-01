@@ -15,9 +15,23 @@ export const UserSchema = new mongoose.Schema({
             itemId: Number,
             name: String,
             description: String,
+            itemType: String,
             level: Number,
             fragmentsUsed: Number,
-            additionalData: String,
+            vehicleStats: {
+                baseSpeed: Number,
+                speedLimit: Number
+            },
+            bonusStats: {
+                landBonus: Number,
+                airBonus: Number,
+                waterBonus: Number,
+                wallBonus: Number,
+                lineShapeBonus: Number,
+                roundShapeBonus: Number,
+                squareShapeBonus: Number,
+                triangleShapeBonus: Number,
+            },
         }],
         claimableItemFragments: [{
             itemFragmentId: Number,
