@@ -11,11 +11,11 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 /**
- * Attempts to claim all of a user's `claimableItems` from the database.
+ * Attempts to claim either a specific set of items or all of a user's `claimableItems` from the database.
  * 
  * If an item is already owned in the user's Web3 account, this item is removed from the database and will NOT be claimed.
  */
-export const claimClaimableItems = async (xId: string): Promise<APIResponse> => {
+export const claimClaimableItems = async (xId: string, itemsToClaim: UserItem[] | 'all'): Promise<APIResponse> => {
     try {
         const wonderbitsUserData = await WonderbitsUserModel.findOne({ twitterId: xId }).lean();
 
@@ -35,7 +35,7 @@ export const claimClaimableItems = async (xId: string): Promise<APIResponse> => 
             }
         }
 
-        const claimableItems = user?.inGameData?.claimableItems as UserItem[];
+        const claimableItems = itemsToClaim === 'all' ? (user?.inGameData?.claimableItems as UserItem[]) : itemsToClaim;
 
         if (claimableItems.length === 0) {
             return {
@@ -158,7 +158,7 @@ export const claimClaimableItems = async (xId: string): Promise<APIResponse> => 
         if (userOwnedETH < addItemsEstimatedGasUnits) {
             return {
                 status: APIResponseStatus.BAD_REQUEST,
-                message: `(claimClaimableItems) User does not have enough ETH to claim all items.`,
+                message: `(claimClaimableItems) User does not have enough ETH to claim the items.`,
                 data: {
                     estimatedGasUnits: addItemsEstimatedGasUnits,
                     userOwnedETH
@@ -177,7 +177,7 @@ export const claimClaimableItems = async (xId: string): Promise<APIResponse> => 
             ]
         );
 
-        console.log('(claimClaimableItems) Successfully claimed all claimable items. Transaction hash:', addItemsTxHash);
+        console.log('(claimClaimableItems) Successfully claimed the claimable items. Transaction hash:', addItemsTxHash);
 
         // delete the claimed and unclaimable items from the database.
         await WonderchampsUserModel.updateOne({ _id: user._id }, {
@@ -198,8 +198,9 @@ export const claimClaimableItems = async (xId: string): Promise<APIResponse> => 
 
         return {
             status: APIResponseStatus.SUCCESS,
-            message: `(claimClaimableItems) Successfully claimed all claimable items.`,
+            message: `(claimClaimableItems) Successfully claimed the claimable items.`,
             data: {
+                itemsClaimed: actualClaimableItems,
                 addItemsTxHash
             }
         }
@@ -211,6 +212,10 @@ export const claimClaimableItems = async (xId: string): Promise<APIResponse> => 
         }
     }
 }
+
+// export const claimClaimableItemFragments = async (xId: string): Promise<APIResponse> => {
+
+// }
 
 /**
  * Formats the bonus stats of an item into a concatenated string.

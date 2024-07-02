@@ -10,6 +10,7 @@ import { claimClaimableItems } from '../api/item';
 const router = express.Router();
 
 router.post('/claim_claimable_items', async (req, res) => {
+    const { itemsToClaim } = req.body;
     try {
         const { status: validateStatus, message: validateMessage, data: validateData } = await validateRequestAuth(req, res, 'claim_claimable_items');
 
@@ -20,7 +21,7 @@ router.post('/claim_claimable_items', async (req, res) => {
             });
         }
 
-        const { status, message, data } = await claimClaimableItems(validateData?.xId);
+        const { status, message, data } = await claimClaimableItems(validateData?.xId, itemsToClaim);
 
         return res.status(status).json({
             status,
