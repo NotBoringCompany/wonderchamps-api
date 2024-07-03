@@ -103,7 +103,7 @@ export enum ItemType {
 }
 
 /**
- * Represents the user model used in the Wonderchamps contract.
+ * Represents the item struct used in the Wonderchamps contract.
  */
 export interface Web3UserItem {
     /** if the user owns the item */
@@ -112,4 +112,14 @@ export interface Web3UserItem {
     numData: bigint;
     /** any additional data of the item */
     additionalData: `0x${string}`[] | string[] | Uint8Array[];
+}
+
+/**
+ * Represents the item fragment struct used in the Wonderchamps contract.
+ */
+export interface Web3UserItemFragment {
+    /** if the user owns the item fragment */
+    owned: boolean;
+    /** the numData of the item fragment */
+    numData: bigint;
 }
