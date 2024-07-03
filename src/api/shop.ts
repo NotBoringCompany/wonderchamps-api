@@ -7,7 +7,7 @@ import { ShopItem, Web3UserItem } from '../models/item';
 import { ShopType } from '../models/shop';
 import { UserWallet } from '../models/wonderbits/user';
 import { BASE_SEPOLIA_CLIENT, DEPLOYER_ACCOUNT, USER_ACCOUNT, WONDERCHAMPS_ABI, WONDERCHAMPS_CONTRACT } from '../utils/constants/web3';
-import { packOwnedIGC, unpackOwnedIGC } from './web3';
+import { packOwnedIGC, unpackOwnedIGC } from './igc';
 import { generateDataHash, generateObjectId, generateSalt, generateSignature } from '../utils/crypto';
 import { formatUnits, stringToBytes } from 'viem';
 import { formatBonusStats, packNumData, packVehicleAdditionalNumericalData } from './item';

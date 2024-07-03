@@ -6,9 +6,6 @@ import { WonderbitsUserModel, WonderchampsUserModel } from '../utils/constants/d
 import { BASE_SEPOLIA_CLIENT, DEPLOYER_ACCOUNT, USER_ACCOUNT, WONDERCHAMPS_ABI, WONDERCHAMPS_CONTRACT } from '../utils/constants/web3';
 import { generateDataHash, generateSalt, generateSignature } from '../utils/crypto';
 import { ADDITIONAL_NUMERICAL_DATA_MASK, ITEM_FRAGMENTS_MASK, ITEM_FRAGMENT_ADDITIONAL_NUMERICAL_DATA_MASK, ITEM_FRAGMENT_ID_MASK, ITEM_FRAGMENT_QUANTITY_MASK, ITEM_ID_MASK, ITEM_LEVEL_MASK } from '../utils/constants/item';
-import * as dotenv from 'dotenv';
-
-dotenv.config();
 
 /**
  * Attempts to claim either a specific set of items or all of a user's `claimableItems` from the database.

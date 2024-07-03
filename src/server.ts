@@ -27,11 +27,13 @@ import xAuth from './routes/auth/x';
 import user from './routes/user';
 import shop from './routes/shop';
 import item from './routes/item';
+import igc from './routes/igc';
 
 app.use('/auth/x', xAuth);
 app.use('/user', user);
 app.use('/shop', shop);
 app.use('/item', item);
+app.use('/igc', igc);
 
 app.listen(port, async () => {
     console.log(`Server running on port ${port}`);
