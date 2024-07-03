@@ -458,8 +458,6 @@ export const claimClaimableItemFragments = async (xId: string, itemFragmentsToCl
     }
 }
 
-claimClaimableItemFragments('65519', 'all');
-
 /**
  * Formats the bonus stats of an item into a concatenated string.
  * 
