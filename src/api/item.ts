@@ -6,6 +6,7 @@ import { WonderbitsUserModel, WonderchampsUserModel } from '../utils/constants/d
 import { BASE_SEPOLIA_CLIENT, DEPLOYER_ACCOUNT, USER_ACCOUNT, WONDERCHAMPS_ABI, WONDERCHAMPS_CONTRACT } from '../utils/constants/web3';
 import { generateDataHash, generateSalt, generateSignature } from '../utils/crypto';
 import { ADDITIONAL_NUMERICAL_DATA_MASK, ITEM_FRAGMENTS_MASK, ITEM_FRAGMENT_ADDITIONAL_NUMERICAL_DATA_MASK, ITEM_FRAGMENT_ID_MASK, ITEM_FRAGMENT_QUANTITY_MASK, ITEM_ID_MASK, ITEM_LEVEL_MASK } from '../utils/constants/item';
+import { UpdateOperations } from '../models/updateOps';
 
 /**
  * Attempts to claim either a specific set of items or all of a user's `claimableItems` from the database.
@@ -242,12 +243,12 @@ export const claimClaimableItemFragments = async (xId: string, itemFragmentsToCl
 
         const claimableItemFragments = itemFragmentsToClaim === 'all' ? (user?.inGameData?.claimableItemFragments as UserItemFragment[]) : itemFragmentsToClaim;
 
-        // if (claimableItemFragments.length === 0) {
-        //     return {
-        //         status: APIResponseStatus.NOT_FOUND,
-        //         message: `(claimClaimableItemFragments) No claimable item fragments found.`
-        //     }
-        // }
+        if (claimableItemFragments.length === 0) {
+            return {
+                status: APIResponseStatus.NOT_FOUND,
+                message: `(claimClaimableItemFragments) No claimable item fragments found.`
+            }
+        }
 
         // separate into:
         // 1. fragments to increment (will call `updateItemFragmentNumData`) -> item fragments that are already owned by the user
@@ -451,6 +452,84 @@ export const claimClaimableItemFragments = async (xId: string, itemFragmentsToCl
         return {
             status: APIResponseStatus.INTERNAL_SERVER_ERROR,
             message: `(claimClaimableItemFragments) Error: ${err.message}`
+        }
+    }
+}
+
+/**
+ * Adds item fragments to the user's `claimableItemFragments` in the database. Usually called after the user earns item fragments in-game.
+ * 
+ * Claimable item fragments can later be claimed by the user using `claimClaimableItemFragments`, which will then be added to the user's Web3 account.
+ */
+export const addClaimableItemFragments = async (xId: string, itemFragmentsToAdd: UserItemFragment[]): Promise<APIResponse> => {
+    try {
+        const wonderbitsUserData = await WonderbitsUserModel.findOne({ twitterId: xId }).lean();
+
+        if (!wonderbitsUserData) {
+            return {
+                status: APIResponseStatus.NOT_FOUND,
+                message: `(addClaimableItemFragments) User not found in Wonderbits database.`
+            }
+        }
+
+        const user = await WonderchampsUserModel.findOne({ _id: wonderbitsUserData._id }).lean();
+
+        if (!user) {
+            return {
+                status: APIResponseStatus.NOT_FOUND,
+                message: `(addClaimableItemFragments) User not found in Wonderchamps database.`
+            }
+        }
+
+        if (itemFragmentsToAdd.length === 0) {
+            return {
+                status: APIResponseStatus.BAD_REQUEST,
+                message: `(addClaimableItemFragments) No item fragments to add.`
+            }
+        }
+
+        const updateOperations: UpdateOperations = {
+            $pull: {},
+            $inc: {},
+            $set: {},
+            $push: {}
+        }
+
+        // add `$each` to the `$push` operation to add multiple item fragments at once.
+        if (!updateOperations.$push['inGameData.claimableItemFragments']) {
+            updateOperations.$push['inGameData.claimableItemFragments'] = {
+                $each: []   
+            }
+        }
+
+        // add the item fragments to the user's `claimableItemFragments` in the database.
+        // if the item fragment with the given ID already exists, increment the amount instead.
+        for (let i = 0; i < itemFragmentsToAdd.length; i++) {
+            const itemFragment = itemFragmentsToAdd[i];
+
+            const itemFragmentIndex = (user?.inGameData?.claimableItemFragments as UserItemFragment[]).findIndex(claimableItemFragment => claimableItemFragment.itemFragmentId === itemFragment.itemFragmentId);
+
+            if (itemFragmentIndex === -1) {
+                updateOperations.$push['inGameData.claimableItemFragments'].$each.push(itemFragment);
+            } else {
+                updateOperations.$inc[`inGameData.claimableItemFragments.${itemFragmentIndex}.amount`] = itemFragment.amount;
+            }
+        }
+
+        await WonderchampsUserModel.updateOne({ _id: user._id }, updateOperations);
+
+        return {
+            status: APIResponseStatus.SUCCESS,
+            message: `(addClaimableItemFragments) Successfully added the item fragments.`,
+            data: {
+                itemFragmentsAdded: itemFragmentsToAdd
+            }
+        }
+    } catch (err: any) {
+        console.log('(addClaimableItemFragments) Error:', err.message)
+        return {
+            status: APIResponseStatus.INTERNAL_SERVER_ERROR,
+            message: `(addClaimableItemFragments) Error: ${err.message}`
         }
     }
 }

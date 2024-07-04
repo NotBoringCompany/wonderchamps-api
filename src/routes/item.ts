@@ -5,7 +5,7 @@ import { APIResponseStatus } from '../models/api';
 import { addShopItems, buyItem, getShopItems } from '../api/shop';
 import { authMiddleware } from '../middlewares/auth';
 import { ShopType } from '../models/shop';
-import { claimClaimableItemFragments, claimClaimableItems } from '../api/item';
+import { addClaimableItemFragments, claimClaimableItemFragments, claimClaimableItems } from '../api/item';
 
 const router = express.Router();
 
@@ -61,6 +61,25 @@ router.post('/claim_claimable_item_fragments', async (req, res) => {
         return res.status(500).json({
             status: 500,
             message: `(claim_claimable_item_fragments) Error: ${err.message}`
+        });
+    }
+})
+
+router.post('/add_claimable_item_fragments', authMiddleware(3), async (req, res) => {
+    const { xId, itemFragmentsToAdd } = req.body;
+
+    try {
+        const { status, message, data } = await addClaimableItemFragments(xId, itemFragmentsToAdd);
+
+        return res.status(status).json({
+            status,
+            message,
+            data
+        });
+    } catch (err: any) {
+        return res.status(500).json({
+            status: 500,
+            message: `(add_claimable_item_fragments) Error: ${err.message}`
         });
     }
 })
