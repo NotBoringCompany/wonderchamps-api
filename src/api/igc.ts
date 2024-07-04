@@ -332,6 +332,53 @@ export const claimClaimableIGC = async (xId: string): Promise<APIResponse> => {
 }
 
 /**
+ * Get the user's owned IGC from their Web3 account. 
+ */
+export const getOwnedIGC = async (xId: string): Promise<APIResponse> => {
+    try {
+        const wonderbitsUserData = await WonderbitsUserModel.findOne({ twitterId: xId }).lean();
+
+        if (!wonderbitsUserData) {
+            return {
+                status: APIResponseStatus.NOT_FOUND,
+                message: `(getOwnedIGC) User not found in Wonderbits database.`
+            }
+        }
+
+        const { privateKey, address } = wonderbitsUserData?.wallet as UserWallet;
+
+        const userAccount = USER_ACCOUNT(privateKey);
+
+        // get the user's current IGC by calling `getOwnedIGC` from the contract.
+        const ownedIGC = (await BASE_SEPOLIA_CLIENT.readContract({
+            account: userAccount,
+            address: WONDERCHAMPS_CONTRACT(userAccount).address,
+            abi: WONDERCHAMPS_ABI,
+            functionName: 'getOwnedIGC',
+            args: [address]
+        })) as bigint;
+
+        // unpack into gold and marble
+        const { gold, marble } = unpackOwnedIGC(ownedIGC);
+
+        return {
+            status: APIResponseStatus.SUCCESS,
+            message: `(getOwnedIGC) IGC retrieved successfully.`,
+            data: {
+                gold,
+                marble
+            }
+        }
+    } catch (err: any) {
+        console.log(`(getOwnedIGC) Error: ${err.message}`);
+        return {
+            status: APIResponseStatus.INTERNAL_SERVER_ERROR,
+            message: `(getOwnedIGC) Error: ${err.message}`
+        }
+    }
+}
+
+/**
  * Packs the given gold and marble amounts into a single bigint instance via bitshifting.
  * 
  * In the Wonderchamps contract, `gold` is the lower 128 bits of the owned IGC, while `marble` is the higher 128 bits.

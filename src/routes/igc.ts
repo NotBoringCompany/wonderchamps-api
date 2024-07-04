@@ -55,4 +55,30 @@ router.post('/claim_claimable_igc', async (req, res) => {
     }
 })
 
+router.get('/get_owned_igc', async (req, res) => {
+    try {
+        const { status: validateStatus, message: validateMessage, data: validateData } = await validateRequestAuth(req, res, 'get_owned_igc');
+
+        if (validateStatus !== APIResponseStatus.SUCCESS) {
+            return res.status(validateStatus).json({
+                status: validateStatus,
+                message: validateMessage
+            });
+        }
+
+        const { status, message, data } = await checkWeb3AccountExists(validateData?.xId);
+
+        return res.status(status).json({
+            status,
+            message,
+            data
+        });
+    } catch (err: any) {
+        return res.status(APIResponseStatus.INTERNAL_SERVER_ERROR).json({
+            status: APIResponseStatus.INTERNAL_SERVER_ERROR,
+            message: `(get_owned_igc) Error: ${err.message}`
+        });
+    }
+})
+
 export default router;
