@@ -40,14 +40,14 @@ export const handleXAuth = async (
                     adminKey: process.env.ADMIN_KEY!
                 }
 
-                console.log('running this here');
+                console.log('running this here');   
 
                 // no need to catch any errors here. if there is an error, the main `catch` block will handle it.
                 const wonderbitsAccountCreationResponse = await axios.post(
                     `${WONDERBITS_API_BASE_URL}/auth/twitter/wonderbits_admin_registration`,
                     requestBody
                 ).catch(err => {
-                    console.log(`(handleXAuth) Error: ${err.message}`);
+                    console.log(`(handleXAuth) Error from Wonderbits Account Creation Response: ${err.message}`);
                 });
                 
                 // if this line runs, then we assume no errors were thrown from `wonderbitsAccountCreationResponse`.
@@ -57,7 +57,7 @@ export const handleXAuth = async (
 
         if (!wonderbitsUserData.userId) {
             console.log(`wonderbits user data response: ${JSON.stringify(wonderbitsUserDataResponse?.data)}`);
-            
+
             // at this point, if `userId` is still null, then the user has a Wonderbits account.
             // get the user's database ID from the Wonderbits User collection.
             // this is a different syntax from the one above because of the data return for creating a new user.
