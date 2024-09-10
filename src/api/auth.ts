@@ -55,7 +55,7 @@ export const handleXAuth = async (
             }
         });
 
-        if (wonderbitsUserData.userId === null) {
+        if (!wonderbitsUserData.userId) {
             // at this point, if `userId` is still null, then the user has a Wonderbits account.
             // get the user's database ID from the Wonderbits User collection.
             // this is a different syntax from the one above because of the data return for creating a new user.
