@@ -62,6 +62,8 @@ export const handleXAuth = async (
             wonderbitsUserData.userId = wonderbitsUserDataResponse?.data?.data?.user?._id;
         }
 
+        console.log(`Wonderbits user data user ID: ${wonderbitsUserData.userId}`);
+
         // check if the user has a wonderchamps account.
         const user = await WonderchampsUserModel.findOne({ _id: wonderbitsUserData.userId }).lean();
 
